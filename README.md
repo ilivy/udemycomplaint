@@ -1,25 +1,22 @@
 # REST API example application
 
-This is a bare-bones example of a Sinatra application providing a REST
-API to a DataMapper-backed model.
+Written with FastAPI.
 
-The entire application is contained within the `app.rb` file.
-
-`config.ru` is a minimal Rack configuration for unicorn.
-
-`run-tests.sh` runs a simplistic test and generates the API
-documentation below.
-
-It uses `run-curl-tests.rb` which runs each command defined in
-`commands.yml`.
 
 ## Install
 
-    bundle install
+    pip install -r requirements.txt
+
+Rename `.env_dist` into `.env` and amend the settings.
+
+## Superuser creation
+
+    export PYTHONPATH=./
+    python commands/create_superuser.py
 
 ## Run the app
 
-    unicorn -p 7000
+    uvicorn main:app --reload
 
 ## Run the tests
 
