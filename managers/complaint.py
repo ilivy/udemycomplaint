@@ -37,13 +37,19 @@ class ComplaintManager:
             "photo_url"
         ] = "https://upload.wikimedia.org/wikipedia/commons/6/6e/065-365-_Show_us_your_smile%21_%282765083201%29.jpg"
         # os.remove(path)
-        id_ = await database.execute(complaint.insert().values(complaint_data))
-        await ComplaintManager.issue_transaction(
-            complaint_data["amount"],
-            f"{user['first_name']} {user['last_name']}",
-            user["iban"],
-            id_,
-        )
+
+        # DB transaction is used here
+        # in order to guarantee that both operations: user's complaint and money transaction
+        # has been stored together, or none of them has been stored
+        async with database.transaction() as tconn:
+            id_ = await tconn._connection.execute(complaint.insert().values(complaint_data))
+            await ComplaintManager.issue_transaction(
+                tconn,
+                complaint_data["amount"],
+                f"{user['first_name']} {user['last_name']}",
+                user["iban"],
+                id_,
+            )
         return await database.fetch_one(complaint.select().where(complaint.c.id == id_))
 
     @staticmethod
@@ -80,7 +86,15 @@ class ComplaintManager:
         )
 
     @staticmethod
-    async def issue_transaction(amount, full_name, iban, complaint_id):
+    async def issue_transaction(tconn, amount, full_name, iban, complaint_id):
+        """
+        :param tconn: comes from create_complaint() method
+        :param amount:
+        :param full_name:
+        :param iban:
+        :param complaint_id:
+        :return:
+        """
         quote_id = wise.create_quote(amount)
         target_account_id = wise.create_recipient_account(full_name, iban)
         transfer_id = wise.create_transfer(target_account_id, quote_id)
@@ -91,4 +105,4 @@ class ComplaintManager:
             "amount": amount,
             "complaint_id": complaint_id,
         }
-        await database.execute(transaction.insert().values(**data))
+        await tconn._connection.execute(transaction.insert().values(**data))

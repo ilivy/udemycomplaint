@@ -29,7 +29,7 @@ class UserManager:
             raise HTTPException(400, "Wrong email or password")
         elif not pwd_context.verify(user_data["password"], user_db_obj["password"]):
             raise HTTPException(400, "Wrong email or password")
-        return AuthManager.encode_token(user_db_obj)
+        return AuthManager.encode_token(user_db_obj), user_db_obj["role"]
 
     @staticmethod
     async def get_all_users():
