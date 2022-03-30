@@ -42,7 +42,9 @@ class ComplaintManager:
         # in order to guarantee that both operations: user's complaint and money transaction
         # has been stored together, or none of them has been stored
         async with database.transaction() as tconn:
-            id_ = await tconn._connection.execute(complaint.insert().values(complaint_data))
+            id_ = await tconn._connection.execute(
+                complaint.insert().values(complaint_data)
+            )
             await ComplaintManager.issue_transaction(
                 tconn,
                 complaint_data["amount"],

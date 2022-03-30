@@ -12,4 +12,3 @@ transaction = sqlalchemy.Table(
     sqlalchemy.Column("amount", sqlalchemy.Float, nullable=False),
     sqlalchemy.Column("complaint_id", sqlalchemy.ForeignKey("complaint.id")),
 )
- 
