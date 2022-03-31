@@ -14,5 +14,5 @@ def write_log(tag: str, message: str):
     filename = datetime.utcnow().strftime("%Y-%m-%d") + ".log"
     curtime = datetime.utcnow().strftime("%H:%M")
     path = os.path.join(LOGS_FOLDER, filename)
-    with open(path, "a") as log:
+    with open(path, "a+") as log:
         log.write(f"{curtime} - {tag} - {message}\n")

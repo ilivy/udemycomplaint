@@ -9,7 +9,7 @@ from starlette.requests import Request
 
 from db import database
 from models import user, RoleType
-from services import logger
+from utils import logger
 
 
 class AuthManager:
