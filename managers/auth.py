@@ -9,6 +9,7 @@ from starlette.requests import Request
 
 from db import database
 from models import user, RoleType
+from services import logger
 
 
 class AuthManager:
@@ -21,7 +22,7 @@ class AuthManager:
             }
             return jwt.encode(payload, config("JWT_SECRET"), algorithm="HS256")
         except Exception as ex:
-            # TODO: write exception into logs
+            logger.write_log("auth", str(ex))
             raise ex
 
 

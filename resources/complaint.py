@@ -8,11 +8,11 @@ from managers.complaint import ComplaintManager
 from schemas.request.complaint import ComplaintIn
 from schemas.response.complaint import ComplaintOut
 
-router = APIRouter(tags=["Complaints"])
+router = APIRouter(prefix="/complaints", tags=["Complaints"])
 
 
 @router.get(
-    "/complaints/",
+    "/",
     dependencies=[Depends(oauth2_scheme)],
     response_model=List[ComplaintOut],
 )
@@ -22,7 +22,7 @@ async def get_complaints(request: Request):
 
 
 @router.post(
-    "/complaints/",
+    "/",
     dependencies=[Depends(oauth2_scheme), Depends(is_complainer)],
     response_model=ComplaintOut,
 )
@@ -32,7 +32,7 @@ async def create_complaint(request: Request, complaint: ComplaintIn):
 
 
 @router.delete(
-    "/complains/{complaint_id}",
+    "/{complaint_id}",
     dependencies=[Depends(oauth2_scheme), Depends(is_admin)],
     status_code=204,
 )
@@ -41,7 +41,7 @@ async def delete_complaint(complaint_id: int):
 
 
 @router.put(
-    "/complaint/{complaint_id}/approve",
+    "/{complaint_id}/approve",
     dependencies=[Depends(oauth2_scheme), Depends(is_approver)],
     status_code=204,
 )
@@ -50,7 +50,7 @@ async def approve_complaint(complaint_id: int):
 
 
 @router.put(
-    "/complaint/{complaint_id}/reject",
+    "/{complaint_id}/reject",
     dependencies=[Depends(oauth2_scheme), Depends(is_approver)],
     status_code=204,
 )
