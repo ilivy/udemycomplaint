@@ -29,14 +29,11 @@ class ComplaintManager:
         complaint_data["complainer_id"] = user["id"]
         encoded_photo = complaint_data.pop("encoded_photo")
         extension = complaint_data.pop("extension")
-        # name = f"{uuid.uuid4()}.{extension}"
-        # path = os.path.join(TEMP_FILE_FOLDER, name)
-        # decode_photo(path, encoded_photo)
-        # complaint_data["photo_url"] = s3.upload_photo(path, name, extension)
-        complaint_data[
-            "photo_url"
-        ] = "https://upload.wikimedia.org/wikipedia/commons/6/6e/065-365-_Show_us_your_smile%21_%282765083201%29.jpg"
-        # os.remove(path)
+        name = f"{uuid.uuid4()}.{extension}"
+        path = os.path.join(TEMP_FILE_FOLDER, name)
+        decode_photo(path, encoded_photo)
+        complaint_data["photo_url"] = s3.upload_photo(path, name, extension)
+        os.remove(path)
 
         # DB transaction is used here
         # in order to guarantee that both operations: user's complaint and money transaction
